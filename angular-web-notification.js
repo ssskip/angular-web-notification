@@ -21,7 +21,7 @@
      * @description
      * The web notification service wraps the HTML 5 Web Notifications API as an angular service.
      */
-    webNotification.factory('webNotification', function onCreateService() {
+    webNotification.factory('webNotification', function onCreateService($q) {
         /**
          * @ngdoc method
          * @function
@@ -130,6 +130,21 @@
         };
 
         var service = {
+
+            isEnabled : isEnabled,
+
+            requestPermission:function(){
+                
+                var deferred = $q.defer();
+                notifyLib.requestPermission(function(){
+                    if (isEnabled()) {
+                        deferred.resolve();
+                    }else{
+                        deferred.reject();
+                    }
+                });
+                return deferred.promise;
+            },
             /**
              * True to enable automatic requesting of permissions if needed.
              *
